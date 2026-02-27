@@ -40,6 +40,16 @@ def handle_client(conn, addr):
     try:
         conn.sendall(b"Enter username: ")
         username = conn.recv(1024).decode().strip()
+        conn.sendall(b"Enter admin password (or press Enter for player): ")
+        password = conn.recv(1024).decode().strip()
+
+        if "ADMIN" in username.upper():
+            conn.sendall(b"Username cannot contain 'Admin'.\n")
+            conn.close()
+            return
+
+        if password == "SET PASSWORD HERE": # TODO note in docs to inform user to set this before running
+            username += " (Admin)"
 
         with lock:
             clients[conn] = username
